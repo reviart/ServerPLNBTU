@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -26,6 +27,22 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected $dates = [
+      'last_sign_in', 'current_sign_in'
+    ];
+
+    public function getCreatedAtAttribute()
+    {
+        return Carbon::parse($this->attributes['created_at'])
+           ->format('d, M Y H:i');
+    }
+
+    public function getCurrentSignInAttribute()
+    {
+        return Carbon::parse($this->attributes['current_sign_in'])
+           ->format('d, M Y H:i');
+    }
 
     public function bidangs(){
       return $this->hasMany('App\Bidang');

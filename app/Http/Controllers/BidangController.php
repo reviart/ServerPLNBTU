@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use App\Bidang;
 use Auth;
 
 class BidangController extends Controller
@@ -43,4 +45,6 @@ class BidangController extends Controller
     {
 
     }
+
+
 }
