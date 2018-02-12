@@ -26,4 +26,12 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function bidangs(){
+      return $this->hasMany('App\Bidang');
+    }
+
+    public function folders(){
+      return $this->hasMany('App\Folder');
+    }
 }

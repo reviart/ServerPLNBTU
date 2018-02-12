@@ -14,3 +14,34 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::prefix('bidang')->group(function () {
+  Route::get('/', 'BidangController@index')->name('bidang.index');
+  Route::get('/store', 'BidangController@create')->name('bidang.store');
+  Route::post('/store', 'BidangController@store')->name('bidang.store.submit');
+  Route::get('edit/{id}', 'BidangController@show')->name('bidang.edit');
+  Route::put('saveEdit/{id}', 'BidangController@update')->name('bidang.edit.submit');
+  Route::delete('destroy/{id}', 'BidangController@destroy')->name('bidang.destroy');
+});
+
+Route::prefix('folder')->group(function () {
+  Route::get('/', 'FolderController@index')->name('folder.index');
+  Route::get('/store', 'FolderController@create')->name('folder.store');
+  Route::post('/store', 'FolderController@store')->name('folder.store.submit');
+  Route::get('edit/{id}', 'FolderController@show')->name('folder.edit');
+  Route::put('saveEdit/{id}', 'FolderController@update')->name('folder.edit.submit');
+  Route::delete('destroy/{id}', 'FolderController@destroy')->name('folder.destroy');
+});
+
+Route::prefix('file')->group(function () {
+  Route::get('/', 'FileController@index')->name('file.index');
+  Route::get('/store', 'FileController@create')->name('file.store');
+  Route::post('/store', 'FileController@store')->name('file.store.submit');
+  Route::get('/edit/{id}', 'FileController@show')->name('file.edit');
+  Route::put('/saveEdit/{id}', 'FileController@update')->name('file.edit.submit');
+  Route::delete('/destroy/{id}', 'FileController@destroy')->name('file.destroy');
+});
