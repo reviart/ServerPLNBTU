@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Bidang extends Model
 {
   protected $fillable = [
-      'name', 'path', 'user_id',
+      'name', 'path', 'access_permission','user_id',
   ];
 
   public function getCreatedAtAttribute()
@@ -29,5 +29,9 @@ class Bidang extends Model
 
   public function folders(){
     return $this->hasMany('App\Folder');
+  }
+
+  public function files(){
+    return $this->hasMany('App\File');
   }
 }

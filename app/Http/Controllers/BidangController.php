@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Storage;
+use League\Flysystem\Filesystem;
 use Illuminate\Http\Request;
 use App\Bidang;
 use Auth;
+use DB;
 
 class BidangController extends Controller
 {
@@ -27,12 +29,26 @@ class BidangController extends Controller
 
     public function store(Request $request)
     {
-      $object = new Satuan;
-      $object->name = $request->get('name');
-      $object->user_id = $request->get('user_id');
-      $object->save();
+      $name = strtoupper($request->get('name'));
+      $ap = $request->get('access_permission');
+      //checking the name first
+      $bidang = Bidang::where('name', '=', $name)->first();
+      if ($bidang == NULL) {
+        //create directory
+        $result = Storage::makeDirectory('public/'.$name, $ap);
 
-      return redirect()->route('bidang.index')->with('success', '1 record created!');
+        //save to db
+        $object = new Bidang;
+        $object->name = $name;
+        $object->path = "public/".$name;
+        $object->access_permission = $ap;
+        $object->user_id = Auth::user()->id;
+        $object->save();
+
+        return redirect()->route('bidang.index')->with('success', '1 data berhasil ditambah!');
+      } else {
+        return redirect()->route('bidang.index')->with('warning', 'Data gagal ditambah, buat nama bidang baru!');
+      }
     }
 
     public function show($id)
@@ -46,5 +62,24 @@ class BidangController extends Controller
 
     }
 
+    public function destroy($id)
+    {
+      //if has file using count file
+      $bidangs = Bidang::findOrFail($id);
+      $bidangs->delete();
+      $name = DB::table('bidangs')->select('name')->where('id', $id)->get();
+      Storage::deleteDirectory('public/'.$name[0]->name)
 
+      return redirect()->back()->with('success', '1 data berhasil dihapus!');
+    }
+
+    public function destroyAll($id)
+    {
+      $bidangs = Bidang::findOrFail($id);
+      $bidangs->delete();
+      $name = DB::table('bidangs')->select('name')->where('id', $id)->get();
+      Storage::deleteDirectory('public/'.$name[0]->name)
+
+      return redirect()->back()->with('success', '1 data berhasil dihapus!');
+    }
 }

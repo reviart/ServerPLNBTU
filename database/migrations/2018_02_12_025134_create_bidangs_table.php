@@ -16,7 +16,8 @@ class CreateBidangsTable extends Migration
         Schema::create('bidangs', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('path');
+            $table->string('path')->nullable();
+            $table->integer('access_permission')->nullable();
             $table->unsignedInteger('user_id');
             $table->timestamps();
 

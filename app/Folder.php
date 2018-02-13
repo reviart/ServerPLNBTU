@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Folder extends Model
 {
   protected $fillable = [
-      'name', 'path', 'user_id',
+      'name', 'path', 'access_permission', 'user_id', 'bidang_id'
   ];
 
   public function getCreatedAtAttribute()
@@ -31,7 +31,7 @@ class Folder extends Model
     return $this->belongsTo('App\Bidang');
   }
 
-  /*public function files(){
+  public function files(){
     return $this->hasMany('App\File');
-  }*/
+  }
 }

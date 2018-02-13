@@ -28,21 +28,15 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    protected $dates = [
+    /*protected $dates = [
       'last_sign_in', 'current_sign_in'
     ];
-
-    public function getCreatedAtAttribute()
-    {
-        return Carbon::parse($this->attributes['created_at'])
-           ->format('d, M Y H:i');
-    }
 
     public function getCurrentSignInAttribute()
     {
         return Carbon::parse($this->attributes['current_sign_in'])
            ->format('d, M Y H:i');
-    }
+    }*/
 
     public function bidangs(){
       return $this->hasMany('App\Bidang');
@@ -50,5 +44,9 @@ class User extends Authenticatable
 
     public function folders(){
       return $this->hasMany('App\Folder');
+    }
+
+    public function files(){
+      return $this->hasMany('App\File');
     }
 }

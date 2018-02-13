@@ -44,11 +44,14 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
+            <li><a href="#">Pencarian data</a></li>
+          </ul>
+          @if(Auth::user())
+          <ul class="nav nav-sidebar">
             <li><a href="{{ route('bidang.index') }}">Bidang</a></li>
             <li><a href="#">Folder</a></li>
             <li><a href="#">File</a></li>
           </ul>
-          @if(Auth::user())
           <ul class="nav nav-sidebar">
             <li><a href="{{ route('home') }}">Profile</a></li>
             <li><a href="#"
