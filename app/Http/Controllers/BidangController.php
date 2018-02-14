@@ -18,7 +18,7 @@ class BidangController extends Controller
 
     public function index()
     {
-      $bidangs = Bidang::with('user')->get();
+      $bidangs = Bidang::with('user')->orderBy('name')->get();
       return view('admin.bidang.index', compact('bidangs'));
     }
 
@@ -31,8 +31,11 @@ class BidangController extends Controller
     {
       $name = strtoupper($request->get('name'));
       $ap = $request->get('access_permission');
+      if ($ap == NULL) {
+        $ap = 777;
+      }
       //checking the name first
-      $bidang = Bidang::where('name', '=', $name)->first();
+      $bidang = Bidang::where('name', $name)->first();
       if ($bidang == NULL) {
         //create directory
         $result = Storage::makeDirectory('public/'.$name, $ap);
@@ -59,27 +62,43 @@ class BidangController extends Controller
 
     public function update(Request $request, $id)
     {
+      $bidangs = Bidang::find($id);
+      $oldPath = $bidangs->path;
+      $newName = strtoupper($request->get('name'));
+      //checking the name first
+      $checkName = Bidang::where('name', $newName)->first();
+      if ($checkName == NULL) {
+        $path = "public/".$newName;
+        //update at db
+        $bidangs->update([
+          'name' => $newName,
+          'path' => $path,
+          'user_id' => Auth::user()->id
+        ]);
+        //update at directory
+        Storage::move($oldPath, $path);
 
+        return redirect()->route('bidang.index')->with('success', '1 data telah diubah!');
+      } else {
+        return redirect()->route('bidang.index')->with('warning', 'Data gagal diubah, nama bidang telah digunakan!');
+      }
     }
 
     public function destroy($id)
     {
       //if has file using count file
-      $bidangs = Bidang::findOrFail($id);
-      $bidangs->delete();
-      $name = DB::table('bidangs')->select('name')->where('id', $id)->get();
-      Storage::deleteDirectory('public/'.$name[0]->name)
 
-      return redirect()->back()->with('success', '1 data berhasil dihapus!');
     }
 
     public function destroyAll($id)
     {
       $bidangs = Bidang::findOrFail($id);
-      $bidangs->delete();
-      $name = DB::table('bidangs')->select('name')->where('id', $id)->get();
-      Storage::deleteDirectory('public/'.$name[0]->name)
-
-      return redirect()->back()->with('success', '1 data berhasil dihapus!');
+      $path = DB::table('bidangs')->select('path')->where('id', $id)->get();
+      if (Storage::deleteDirectory($path[0]->path)) {
+        $bidangs->delete();
+        return redirect()->back()->with('success', '1 data berhasil dihapus!');
+      }else {
+        return redirect()->back()->with('warning', 'Data gagal dihapus coba lagi!');
+      }
     }
 }

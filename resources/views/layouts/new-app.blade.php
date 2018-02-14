@@ -49,8 +49,8 @@
           @if(Auth::user())
           <ul class="nav nav-sidebar">
             <li><a href="{{ route('bidang.index') }}">Bidang</a></li>
-            <li><a href="#">Folder</a></li>
-            <li><a href="#">File</a></li>
+            <li><a href="{{ route('folder.index') }}">Folder</a></li>
+            <li><a href="{{ route('file.index') }}">File</a></li>
           </ul>
           <ul class="nav nav-sidebar">
             <li><a href="{{ route('home') }}">Profile</a></li>

@@ -31,7 +31,7 @@
           <th>Waktu pembuatan</th>
           <th>Terakhir diubah</th>
           @if(Auth::user())
-          <th colspan="3">Aksi</th>
+          <th colspan="2">Aksi</th>
           @endif
         </tr>
       </thead>
@@ -51,13 +51,6 @@
               {{ csrf_field() }}
               {{ method_field('DELETE') }}
               <button type="submit" name="button" onclick="return confirm('Apakah yakin menghapus bidang {{$data->name}} ?')" class="btn btn-danger">Delete</button>
-            </form>
-          </td>
-          <td width="5%">
-            <form class="" action="{{ route('bidang.destroyAll', [$data->id]) }}" method="post">
-              {{ csrf_field() }}
-              {{ method_field('DELETE') }}
-              <button type="submit" name="button" onclick="return confirm('Apakah yakin menghapus bidang {{$data->name}} beserta seluruh datanya?')" class="btn btn-danger">Delete ALL</button>
             </form>
           </td>
           @endif

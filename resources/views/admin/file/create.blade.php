@@ -21,17 +21,6 @@
                               @endif
                           </div>
                       </div>
-                      <div class="form-group{{ $errors->has('access_permission') ? ' has-error' : '' }}">
-                          <label for="access_permission" class="col-md-3 control-label">Hak akses</label>
-                          <div class="col-md-8">
-                              <input id="access_permission" type="number" class="form-control" name="access_permission" placeholder="Ex: 777 (tidak wajib)">
-                              @if ($errors->has('access_permission'))
-                                  <span class="help-block">
-                                      <strong>{{ $errors->first('access_permission') }}</strong>
-                                  </span>
-                              @endif
-                          </div>
-                      </div>
 
                       <div class="form-group">
                           <div class="col-md-6 col-md-offset-3">

@@ -2,16 +2,16 @@
 
 @section('content')
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-  <h2>Tambah bidang</h2>
+  <h2>Tambah folder</h2>
   <div class="row">
       <div class="col-md-10">
           <div class="panel panel-default">
               <div class="panel-heading"></div>
               <div class="panel-body">
-                  <form class="form-horizontal" method="POST" action="{{ route('bidang.store.submit') }}">
+                  <form class="form-horizontal" method="POST" action="{{ route('folder.store.submit') }}">
                       {{ csrf_field() }}
                       <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                          <label for="name" class="col-md-3 control-label">Nama bidang</label>
+                          <label for="name" class="col-md-3 control-label">Nama folder</label>
                           <div class="col-md-8">
                               <input id="name" type="text" class="form-control" name="name" autocomplete="off" required autofocus>
                               @if ($errors->has('name'))
@@ -30,6 +30,17 @@
                                       <strong>{{ $errors->first('access_permission') }}</strong>
                                   </span>
                               @endif
+                          </div>
+                      </div>
+                      <div class="form-group{{ $errors->has('bidang_id') ? ' has-error' : '' }}">
+                          <label for="bidang_id" class="col-md-3 control-label">Bidang</label>
+                          <div class="col-md-4">
+                            <select class="form-control" id="sel1" name="bidang_id" required>
+                              <option>Pilih bidang</option>
+                              @foreach($folders as $data)
+                                <option value="{{$data->bidang->id}}">{{$data->bidang->name}}</option>
+                              @endforeach
+                            </select>
                           </div>
                       </div>
 

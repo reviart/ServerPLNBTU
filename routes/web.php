@@ -26,6 +26,7 @@ Route::prefix('bidang')->group(function () {
   Route::get('edit/{id}', 'BidangController@show')->name('bidang.edit');
   Route::put('saveEdit/{id}', 'BidangController@update')->name('bidang.edit.submit');
   Route::delete('destroy/{id}', 'BidangController@destroy')->name('bidang.destroy');
+  Route::delete('destroyAll/{id}', 'BidangController@destroyAll')->name('bidang.destroyAll');
 });
 
 Route::prefix('folder')->group(function () {
@@ -35,6 +36,7 @@ Route::prefix('folder')->group(function () {
   Route::get('edit/{id}', 'FolderController@show')->name('folder.edit');
   Route::put('saveEdit/{id}', 'FolderController@update')->name('folder.edit.submit');
   Route::delete('destroy/{id}', 'FolderController@destroy')->name('folder.destroy');
+  Route::delete('destroyAll/{id}', 'FolderController@destroyAll')->name('folder.destroyAll');
 });
 
 Route::prefix('file')->group(function () {
