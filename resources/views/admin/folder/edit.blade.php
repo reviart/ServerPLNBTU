@@ -2,24 +2,35 @@
 
 @section('content')
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-  <h2>Edit bidang</h2>
+  <h2>Edit folder</h2>
   <div class="row">
       <div class="col-md-10">
           <div class="panel panel-default">
               <div class="panel-heading"></div>
               <div class="panel-body">
-                  <form class="form-horizontal" method="POST" action="{{ route('bidang.edit.submit', [$bidangs->id]) }}">
+                  <form class="form-horizontal" method="POST" action="{{ route('folder.edit.submit', [$folders->id]) }}">
                       {{ csrf_field() }}
                       {{ method_field('PUT') }}
                       <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                          <label for="name" class="col-md-3 control-label">Nama bidang</label>
+                          <label for="name" class="col-md-3 control-label">Nama folder</label>
                           <div class="col-md-8">
-                              <input id="name" type="text" class="form-control" name="name" placeholder="{{ $bidangs->name }}" required autofocus>
+                              <input id="name" type="text" class="form-control" name="name" placeholder="{{ $folders->name }}" required autofocus>
                               @if ($errors->has('name'))
                                   <span class="help-block">
                                       <strong>{{ $errors->first('name') }}</strong>
                                   </span>
                               @endif
+                          </div>
+                      </div>
+                      <div class="form-group{{ $errors->has('bidang_id') ? ' has-error' : '' }}">
+                          <label for="bidang_id" class="col-md-3 control-label">Bidang</label>
+                          <div class="col-md-4">
+                            <select class="form-control" id="sel1" name="bidang_id" required>
+                              <option>Pilih bidang</option>
+                              @foreach($bidangs as $data)
+                                <option value="{{$data->id}}">{{$data->name}}</option>
+                              @endforeach
+                            </select>
                           </div>
                       </div>
 

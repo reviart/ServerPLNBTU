@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Storage;
-use League\Flysystem\Filesystem;
 use Illuminate\Http\Request;
 use App\Bidang;
 use Auth;
@@ -30,15 +29,18 @@ class BidangController extends Controller
     public function store(Request $request)
     {
       $name = strtoupper($request->get('name'));
-      $ap = $request->get('access_permission');
-      if ($ap == NULL) {
-        $ap = 777;
-      }
+
       //checking the name first
       $bidang = Bidang::where('name', $name)->first();
       if ($bidang == NULL) {
+        //making or storing ap
+        $ap = $request->get('access_permission');
+        if ($ap == NULL) {
+          $ap = 777;
+        }
+
         //create directory
-        $result = Storage::makeDirectory('public/'.$name, $ap);
+        Storage::makeDirectory('public/'.$name, $ap);
 
         //save to db
         $object = new Bidang;
@@ -62,12 +64,12 @@ class BidangController extends Controller
 
     public function update(Request $request, $id)
     {
-      $bidangs = Bidang::find($id);
-      $oldPath = $bidangs->path;
       $newName = strtoupper($request->get('name'));
       //checking the name first
       $checkName = Bidang::where('name', $newName)->first();
       if ($checkName == NULL) {
+        $bidangs = Bidang::find($id);
+        $oldPath = $bidangs->path;
         $path = "public/".$newName;
         //update at db
         $bidangs->update([

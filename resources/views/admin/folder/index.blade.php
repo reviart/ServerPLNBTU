@@ -26,7 +26,7 @@
       <thead>
         <tr class="success">
           <th>NO</th>
-          <th>Nama Folder</th>
+          <th>Nama folder</th>
           <th>Nama bidang</th>
           <th>Dibuat/diubah oleh</th>
           <th>Waktu pembuatan</th>
@@ -43,7 +43,7 @@
           <td>{{$no += 1}}</td>
           <td>{{$data->name}}</td>
           <td>{{$data->bidang->name}}</td>
-          <td>{{$data->user->name}}</td>
+          <td>{{ substr($data->user->name, 0, 15) }}</td>
           <td>{{$data->created_at}}</td>
           <td>{{$data->updated_at}}</td>
           @if(Auth::user())
@@ -59,7 +59,7 @@
             <form class="" action="{{ route('folder.destroyAll', [$data->id]) }}" method="post">
               {{ csrf_field() }}
               {{ method_field('DELETE') }}
-              <button type="submit" name="button" onclick="return confirm('Apakah yakin menghapus folder {{$data->name}} beserta seluruh datanya?')" class="btn btn-danger">Delete ALL</button>
+              <button type="submit" name="button" onclick="return confirm('Apakah yakin menghapus folder {{$data->name}} beserta seluruh datanya?')" class="btn btn-danger">Delete all</button>
             </form>
           </td>
           @endif

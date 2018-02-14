@@ -38,7 +38,7 @@
                             <select class="form-control" id="sel1" name="bidang_id" required>
                               <option>Pilih bidang</option>
                               @foreach($folders as $data)
-                                <option value="{{$data->bidang->id}}">{{$data->bidang->name}}</option>
+                                <option value="{{$data->id}}">{{$data->name}}</option>
                               @endforeach
                             </select>
                           </div>
