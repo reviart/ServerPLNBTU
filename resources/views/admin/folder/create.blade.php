@@ -21,6 +21,7 @@
                               @endif
                           </div>
                       </div>
+                      
                       <div class="form-group{{ $errors->has('access_permission') ? ' has-error' : '' }}">
                           <label for="access_permission" class="col-md-3 control-label">Hak akses</label>
                           <div class="col-md-8">

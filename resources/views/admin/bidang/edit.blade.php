@@ -14,7 +14,7 @@
                       <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
                           <label for="name" class="col-md-3 control-label">Nama bidang</label>
                           <div class="col-md-8">
-                              <input id="name" type="text" class="form-control" name="name" placeholder="{{ $bidangs->name }}" required autofocus>
+                              <input id="name" type="text" class="form-control" name="name" value="{{ $bidangs->name }}" required autofocus>
                               @if ($errors->has('name'))
                                   <span class="help-block">
                                       <strong>{{ $errors->first('name') }}</strong>

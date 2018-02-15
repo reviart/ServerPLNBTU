@@ -15,6 +15,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/test', function () {
+    $name = "BLAW";
+    $folders = DB::table('folders')->where('name', $name)->first();
+    echo $folders->id;
+});
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

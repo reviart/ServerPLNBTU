@@ -14,7 +14,7 @@
                       <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
                           <label for="name" class="col-md-3 control-label">Nama folder</label>
                           <div class="col-md-8">
-                              <input id="name" type="text" class="form-control" name="name" placeholder="{{ $folders->name }}" required autofocus>
+                              <input id="name" type="text" class="form-control" name="name" value="{{ $folders->name }}" required autofocus>
                               @if ($errors->has('name'))
                                   <span class="help-block">
                                       <strong>{{ $errors->first('name') }}</strong>
@@ -26,8 +26,8 @@
                           <label for="bidang_id" class="col-md-3 control-label">Bidang</label>
                           <div class="col-md-4">
                             <select class="form-control" id="sel1" name="bidang_id" required>
-                              <option>Pilih bidang</option>
-                              @foreach($bidangs as $data)
+                              <option value="{{$bidangs->bidang->id}}">{{$bidangs->bidang->name}}</option>
+                              @foreach($lists as $data)
                                 <option value="{{$data->id}}">{{$data->name}}</option>
                               @endforeach
                             </select>
