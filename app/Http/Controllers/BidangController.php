@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Bidang;
+use App\Folder;
 use Auth;
 use DB;
 
@@ -99,12 +100,18 @@ class BidangController extends Controller
     public function destroyAll($id)
     {
       $bidangs = Bidang::findOrFail($id);
-      $path = DB::table('bidangs')->select('path')->where('id', $id)->get();
+      $path = Bidang::where('id', $id)->get();
+
       if (Storage::deleteDirectory($path[0]->path)) {
+        //destroy child first
+        $folders = Folder::where('bidang_id', $id)->get(['id']);
+        Folder::destroy($folders->toArray());
+
+        //then destroy the parent
         $bidangs->delete();
-        return redirect()->back()->with('success', '1 data berhasil dihapus!');
+        return redirect()->back()->with('success', 'Seluruh file dan directori berhasil dihapus!');
       }else {
-        return redirect()->back()->with('warning', 'Data gagal dihapus coba lagi!');
+        return redirect()->back()->with('warning', 'File dan directori gagal dihapus coba lagi!');
       }
     }
 }

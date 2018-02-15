@@ -20,7 +20,29 @@
   @else
   @endif
 
-  <a href="{{ route('folder.store') }}" class="btn btn-success">Tambah folder</a>
+  <div class="row">
+    <div class="col-md-8">
+      <a href="{{ route('folder.store') }}" class="btn btn-success">Tambah folder</a>
+    </div>
+    <?php $bidang_id = 0; ?>
+    <form method="POST" action="{{ route('folder.find', $bidang_id) }}">
+      {{ csrf_field() }}
+      <div class="col-md-3">
+        <select class="form-control" id="sel1" name="bidang_id" required>
+          <option value="0">Cari berdasarkan bidang</option>
+          @foreach($bidangs as $data)
+            <option value="{{$data->id}}">{{$data->name}}</option>
+          @endforeach
+        </select>
+      </div>
+      <div class="col-md-1">
+        <button type="submit" onclick="return confirm('Apakah sudah memilih bidang?')" class="btn btn-primary">
+            Cari
+        </button>
+      </div>
+    </form>
+  </div>
+
   <div class="table-responsive">
     <table class="table table-striped table-hover">
       <thead>

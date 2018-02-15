@@ -37,6 +37,7 @@ Route::prefix('bidang')->group(function () {
 
 Route::prefix('folder')->group(function () {
   Route::get('/', 'FolderController@index')->name('folder.index');
+  Route::get('find/{id}', 'FolderController@find')->name('folder.find');
   Route::get('/store', 'FolderController@create')->name('folder.store');
   Route::post('/store', 'FolderController@store')->name('folder.store.submit');
   Route::get('edit/{id}', 'FolderController@show')->name('folder.edit');

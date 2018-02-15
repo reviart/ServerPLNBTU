@@ -19,7 +19,19 @@ class FolderController extends Controller
     public function index()
     {
       $folders = Folder::with('user', 'bidang')->orderBy('name')->get();
-      return view('admin.folder.index', compact('folders'));
+      $bidangs = Bidang::all();
+      return view('admin.folder.index', compact('folders', 'bidangs'));
+    }
+
+    public function find($id)
+    {
+      if ($id >= 0) {
+        $folders = Folder::with('user', 'bidang')->where('bidang_id', $id)->orderBy('name')->get();
+        $bidangs = Bidang::all();
+        return view('admin.folder.index', compact('folders', 'bidangs'));
+      } else {
+        return redirect()->route('folder.index')->with('warning', 'Gagal pencarian!');
+      }
     }
 
     public function create()
