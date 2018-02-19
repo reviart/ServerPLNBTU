@@ -19,11 +19,14 @@ class BidangController extends Controller
     public function index()
     {
       $bidangs = Bidang::with('user')->orderBy('name')->get();
+      return view('admin.bidang.index', compact('bidangs'));
       /*$id = $bidangs[0]->id;
       $c_folders = Folder::where('bidang_id', $id);
       hitung banyak folder yang memilih bidang tersebut
       countfolder $bidangs->id = */
-      return view('admin.bidang.index', compact('bidangs'));
+      //$id = $bidangs[0]->id;
+      //$c_folders = Folder::with('bidang')->count('bidang_id')->where('bidang_id', $id);
+      //return "ok";
     }
 
     public function create()
@@ -93,17 +96,11 @@ class BidangController extends Controller
 
     public function destroy($id)
     {
-      //if has file using count file
-
-    }
-
-    public function destroyAll($id)
-    {
       $bidangs = Bidang::findOrFail($id);
       $path = Bidang::where('id', $id)->get();
 
       if (Storage::deleteDirectory($path[0]->path)) {
-        //destroy child first
+        //destroy multiple child first
         $folders = Folder::where('bidang_id', $id)->get(['id']);
         Folder::destroy($folders->toArray());
 

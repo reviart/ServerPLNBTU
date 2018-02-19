@@ -33,7 +33,11 @@
                             </select>
                           </div>
                       </div>
-
+                      <div class="form-group">
+                        <div class="col-md-8 col-md-offset-3">
+                          <i>Huruf terakhir nama folder tidak diperbolehkan menggunakan simbol!</i>
+                        </div>
+                      </div>
                       <div class="form-group">
                           <div class="col-md-6 col-md-offset-3">
                               <button type="submit" onclick="return confirm('Apakah data sudah terisi benar?')" class="btn btn-primary">

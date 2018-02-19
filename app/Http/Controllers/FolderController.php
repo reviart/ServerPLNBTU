@@ -23,14 +23,15 @@ class FolderController extends Controller
       return view('admin.folder.index', compact('folders', 'bidangs'));
     }
 
-    public function find($id)
+    public function find(Request $request)
     {
-      if ($id >= 0) {
+      $id = $request->get('bidang_id');
+      if ($id > 0) {
         $folders = Folder::with('user', 'bidang')->where('bidang_id', $id)->orderBy('name')->get();
         $bidangs = Bidang::all();
         return view('admin.folder.index', compact('folders', 'bidangs'));
       } else {
-        return redirect()->route('folder.index')->with('warning', 'Gagal pencarian!');
+        return redirect()->route('folder.index')->with('warning', 'Gagal pencarian, anda belum memilih bidang!');
       }
     }
 
@@ -168,4 +169,21 @@ class FolderController extends Controller
       }
     }
 
+    public function destroy($id)
+    {
+      $folders = Folder::findOrFail($id);
+      $path = $folders->path;
+
+      if (Storage::deleteDirectory($path)) {
+        //destroy multiple child first
+        $files = File::where('folder_id', $id)->get(['id']);
+        File::destroy($files->toArray());
+
+        //then destroy the parent
+        $folders->delete();
+        return redirect()->back()->with('success', 'Seluruh file dan directori berhasil dihapus!');
+      }else {
+        return redirect()->back()->with('warning', 'File dan directori gagal dihapus coba lagi!');
+      }
+    }
 }

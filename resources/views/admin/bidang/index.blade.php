@@ -32,9 +32,7 @@
           <th>Dibuat/diubah oleh</th>
           <th>Waktu pembuatan</th>
           <th>Terakhir diubah</th>
-          @if(Auth::user())
-          <th colspan="3">Aksi</th>
-          @endif
+          <th colspan="2">Aksi</th>
         </tr>
       </thead>
       <tbody>
@@ -50,20 +48,17 @@
           <td>{{$data->updated_at}}</td>
           @if(Auth::user())
           <td width="5%"><a href="{{ route('bidang.edit', [$data->id]) }}" class="btn btn-warning">Edit</a></td>
+          @endif
+          @if(Auth::user()->id == $data->user_id)
           <td width="5%">
             <form class="" action="{{ route('bidang.destroy', [$data->id]) }}" method="post">
               {{ csrf_field() }}
               {{ method_field('DELETE') }}
-              <button type="submit" name="button" onclick="return confirm('Apakah yakin menghapus bidang {{$data->name}} ?')" class="btn btn-danger">Delete</button>
+              <button type="submit" name="button" onclick="return confirm('Apakah yakin menghapus bidang {{$data->name}}? (seluruh folder dan file akan ikut terhapus)')" class="btn btn-danger">Delete</button>
             </form>
           </td>
-          <td width="5%">
-            <form class="" action="{{ route('bidang.destroyAll', [$data->id]) }}" method="post">
-              {{ csrf_field() }}
-              {{ method_field('DELETE') }}
-              <button type="submit" name="button" onclick="return confirm('Apakah yakin menghapus bidang {{$data->name}} beserta seluruh datanya?')" class="btn btn-danger">Delete all</button>
-            </form>
-          </td>
+          @else
+          <td width="5%"></td>
           @endif
         </tr>
         @endforeach

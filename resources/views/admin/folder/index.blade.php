@@ -25,7 +25,7 @@
       <a href="{{ route('folder.store') }}" class="btn btn-success">Tambah folder</a>
     </div>
     <?php $bidang_id = 0; ?>
-    <form method="POST" action="{{ route('folder.find', $bidang_id) }}">
+    <form method="POST" action="{{ route('folder.find') }}">
       {{ csrf_field() }}
       <div class="col-md-3">
         <select class="form-control" id="sel1" name="bidang_id" required>
@@ -53,9 +53,7 @@
           <th>Dibuat/diubah oleh</th>
           <th>Waktu pembuatan</th>
           <th>Terakhir diubah</th>
-          @if(Auth::user())
-          <th colspan="3">Aksi</th>
-          @endif
+          <th colspan="2">Aksi</th>
         </tr>
       </thead>
       <tbody>
@@ -70,20 +68,17 @@
           <td>{{$data->updated_at}}</td>
           @if(Auth::user())
           <td width="5%"><a href="{{ route('folder.edit', [$data->id]) }}" class="btn btn-warning">Edit</a></td>
+          @endif
+          @if(Auth::user()->id == $data->user_id)
           <td width="5%">
             <form class="" action="{{ route('folder.destroy', [$data->id]) }}" method="post">
               {{ csrf_field() }}
               {{ method_field('DELETE') }}
-              <button type="submit" name="button" onclick="return confirm('Apakah yakin menghapus folder {{$data->name}} ?')" class="btn btn-danger">Delete</button>
+              <button type="submit" name="button" onclick="return confirm('Apakah yakin menghapus folder {{$data->name}}? (seluruh file akan ikut terhapus)')" class="btn btn-danger">Delete</button>
             </form>
           </td>
-          <td width="5%">
-            <form class="" action="{{ route('folder.destroyAll', [$data->id]) }}" method="post">
-              {{ csrf_field() }}
-              {{ method_field('DELETE') }}
-              <button type="submit" name="button" onclick="return confirm('Apakah yakin menghapus folder {{$data->name}} beserta seluruh datanya?')" class="btn btn-danger">Delete all</button>
-            </form>
-          </td>
+          @else
+          <td width="5%"></td>
           @endif
         </tr>
         @endforeach
