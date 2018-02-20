@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
-    //public $red = "<meta http-equiv='refresh' content='2;URL=/files'/>";
-
     public function __construct()
     {
       $this->middleware('auth');
@@ -27,7 +25,7 @@ class FileController extends Controller
     }
 
     public function find(Request $request)
-    {//blm d edit
+    {/*blm d edit
       $id = $request->get('bidang_id');
       if ($id > 0) {
         $folders = Folder::with('user', 'bidang')->where('bidang_id', $id)->orderBy('name')->get();
@@ -35,7 +33,7 @@ class FileController extends Controller
         return view('admin.folder.index', compact('folders', 'bidangs'));
       } else {
         return redirect()->route('folder.index')->with('warning', 'Gagal pencarian, anda belum memilih bidang!');
-      }
+      }*/
     }
 
     public function create(){
@@ -44,16 +42,9 @@ class FileController extends Controller
       return view('admin.file.create', compact('folders', 'bidangs'));
     }
 
-    public function show($id){
-      $datas = File::find($id);
-      return view('file.edit', compact('datas'));
-    }
-
     public function store(Request $request)
     {
       if ($request->hasFile('file')) {
-        //$tmp = $request->get('matakuliah');
-
         $folder_id     = $request->get('folder_id');
         $getFolderName = Folder::where('id', $folder_id)->first();
         $getFolderName = $getFolderName->name;
@@ -63,35 +54,38 @@ class FileController extends Controller
         $getBidangName = $getBidangName->name;
 
         $path     = "public/".$getBidangName."/".$getFolderName;
-        $user_id  = Auth::user()->id;
-        $ap       = 777;
-
         foreach ($request->file as $file) {
           $fileName = $file->getClientOriginalName();
           $fileExt  = $file->getClientOriginalExtension();
           $fileSize = $file->getClientSize();
 
           //store to file
-          $file->storeAs('public/'.$saveTo, $fileName);
+          $file->storeAs($path, $fileName);
 
           //store to db
           $fileObject = new File;
           $fileObject->name = $fileName;
           $fileObject->ext = $fileExt;
           $fileObject->size = $fileSize;
+          $fileObject->path = $path."/".$fileName;
+          $fileObject->access_permission = 777;
           $fileObject->status = "not_edited";
-          $fileObject->user_nim = $getAssistant;
-          $fileObject->kode_mk = $getKodemk;
+          $fileObject->user_id = Auth::user()->id;
+          $fileObject->bidang_id = $bidang_id;
+          $fileObject->folder_id = $folder_id;
           $fileObject->save();
-          echo 'Upload success : '.$fileName.'<br>';
+
+          return redirect()->route('file.index')->with('success', 'File berhasil diupload!');
         }
-        //redirect
-        $msg = $this->red;
       }
       else {
-        $msg = 'No file selected '.$this->red;
+        return redirect()->route('file.index')->with('warning', 'Gagal upload file!');
       }
-      return $msg;*/
+    }
+
+    public function show($id){
+      //$datas = File::find($id);
+      return view('admin.file.edit', compact('datas'));
     }
 
     public function update(Request $request, $id){
