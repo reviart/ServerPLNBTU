@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Bidang;
 use App\Folder;
-//use App\User;
 use Auth;
 
 class FolderController extends Controller
@@ -37,8 +36,8 @@ class FolderController extends Controller
 
     public function create()
     {
-      $folders = Bidang::all();
-      return view('admin.folder.create', compact('folders'));
+      $bidangs = Bidang::all();
+      return view('admin.folder.create', compact('bidangs'));
     }
 
     public function store(Request $request)

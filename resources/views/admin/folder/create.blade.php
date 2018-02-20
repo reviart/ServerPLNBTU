@@ -37,8 +37,8 @@
                           <label for="bidang_id" class="col-md-3 control-label">Bidang</label>
                           <div class="col-md-4">
                             <select class="form-control" id="sel1" name="bidang_id" required>
-                              <option>Pilih bidang</option>
-                              @foreach($folders as $data)
+                              <option value="">Pilih bidang</option>
+                              @foreach($bidangs as $data)
                                 <option value="{{$data->id}}">{{$data->name}}</option>
                               @endforeach
                             </select>

@@ -24,12 +24,11 @@
     <div class="col-md-8">
       <a href="{{ route('folder.store') }}" class="btn btn-success">Tambah folder</a>
     </div>
-    <?php $bidang_id = 0; ?>
     <form method="POST" action="{{ route('folder.find') }}">
       {{ csrf_field() }}
       <div class="col-md-3">
         <select class="form-control" id="sel1" name="bidang_id" required>
-          <option value="0">Cari berdasarkan bidang</option>
+          <option value="">Cari berdasarkan bidang</option>
           @foreach($bidangs as $data)
             <option value="{{$data->id}}">{{$data->name}}</option>
           @endforeach
