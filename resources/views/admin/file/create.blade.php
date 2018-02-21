@@ -10,17 +10,6 @@
               <div class="panel-body">
                   <form class="form-horizontal" method="POST" action="{{ route('file.store.submit') }}" enctype="multipart/form-data">
                       {{ csrf_field() }}
-                      <div class="form-group{{ $errors->has('folder_id') ? ' has-error' : '' }}">
-                          <label for="folder_id" class="col-md-3 control-label">Folder</label>
-                          <div class="col-md-4">
-                            <select class="form-control" id="sel1" name="folder_id" required>
-                              <option value="">Pilih Folder</option>
-                              @foreach($folders as $data)
-                                <option value="{{$data->id}}">{{$data->name}}</option>
-                              @endforeach
-                            </select>
-                          </div>
-                      </div>
                       <div class="form-group{{ $errors->has('bidang_id') ? ' has-error' : '' }}">
                           <label for="bidang_id" class="col-md-3 control-label">Bidang</label>
                           <div class="col-md-4">
@@ -28,6 +17,17 @@
                               <option value="">Pilih bidang</option>
                               @foreach($bidangs as $data)
                                 <option value="{{$data->id}}">{{$data->name}}</option>
+                              @endforeach
+                            </select>
+                          </div>
+                      </div>
+                      <div class="form-group{{ $errors->has('folder_id') ? ' has-error' : '' }}">
+                          <label for="folder_id" class="col-md-3 control-label">Folder</label>
+                          <div class="col-md-4">
+                            <select class="form-control" id="sel1" name="folder_id" required>
+                              <option value="">Pilih Folder</option>
+                              @foreach($folders as $data)
+                                <option value="{{$data->id}}">{{$data->name}}-({{$data->bidang->name}})</option>
                               @endforeach
                             </select>
                           </div>
@@ -40,9 +40,7 @@
                       </div>
                       <div class="form-group">
                           <div class="col-md-6 col-md-offset-3">
-                              <button type="submit" onclick="return confirm('Apakah data sudah terisi benar?')" class="btn btn-primary">
-                                  Upload
-                              </button>
+                              <input type="submit" name="submit" value="upload" class="btn btn-primary">
                               <button type="button" name="button" onclick="history.back()" class="btn btn-warning">Cancel</button>
                           </div>
                       </div>

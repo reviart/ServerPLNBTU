@@ -21,19 +21,11 @@
   @endif
 
   <div class="row">
-    <div class="col-md-5">
+    <div class="col-md-8">
       <a href="{{ route('file.store') }}" class="btn btn-success">Tambah file</a>
     </div>
     <form method="POST" action="{{ route('file.find') }}">
       {{ csrf_field() }}
-      <div class="col-md-3">
-        <select class="form-control" id="sel1" name="folder_id">
-          <option value="">Cari berdasarkan folder</option>
-          @foreach($folders as $data)
-            <option value="{{$data->id}}">{{$data->name}}</option>
-          @endforeach
-        </select>
-      </div>
       <div class="col-md-3">
         <select class="form-control" id="sel1" name="bidang_id" required>
           <option value="">Cari berdasarkan bidang</option>
@@ -58,12 +50,9 @@
           <th>Nama file</th>
           <th>Nama folder</th>
           <th>Nama bidang</th>
-          <th>Ukuran</th>
-          <th>Dibuat/diubah oleh</th>
-          <th>Waktu unggah</th>
           <th>Terakhir diubah</th>
           @if(Auth::user())
-          <th colspan="2">Aksi</th>
+          <th colspan="3">Aksi</th>
           @endif
         </tr>
       </thead>
@@ -75,11 +64,9 @@
           <td>{{$data->name}}</td>
           <td>{{$data->folder->name}}</td>
           <td>{{$data->bidang->name}}</td>
-          <td>{{$data->size}}</td>
-          <td>{{$data->user->name}}</td>
-          <td>{{$data->created_at}}</td>
           <td>{{$data->updated_at}}</td>
           @if(Auth::user())
+          <td width="5%"><a href="{{ route('file.detail', [$data->id]) }}" class="btn btn-primary">Detail</a></td>
           <td width="5%"><a href="{{ route('file.edit', [$data->id]) }}" class="btn btn-warning">Edit</a></td>
           <td width="5%">
             <form class="" action="{{ route('file.destroy', [$data->id]) }}" method="post">

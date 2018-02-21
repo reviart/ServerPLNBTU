@@ -47,7 +47,8 @@ Route::prefix('folder')->group(function () {
 
 Route::prefix('file')->group(function () {
   Route::get('/', 'FileController@index')->name('file.index');
-  Route::get('find', 'FileController@find')->name('file.find');
+  Route::get('detail/{id}', 'FileController@detail')->name('file.detail');
+  Route::post('find', 'FileController@find')->name('file.find');
   Route::get('/store', 'FileController@create')->name('file.store');
   Route::post('/store', 'FileController@store')->name('file.store.submit');
   Route::get('/edit/{id}', 'FileController@show')->name('file.edit');

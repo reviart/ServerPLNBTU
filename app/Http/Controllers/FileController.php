@@ -17,23 +17,29 @@ class FileController extends Controller
       $this->middleware('auth');
     }
 
-    public function index(){
-      $files = File::with('folder', 'bidang', 'user')->orderBy('name')->get();
-      $folders = Folder::all();
+    public function index()
+    {
+      $files = File::with('folder', 'bidang')->orderBy('name')->get();
       $bidangs = Bidang::all();
-      return view('admin.file.index', compact('files', 'folders', 'bidangs'));
+      return view('admin.file.index', compact('files', 'bidangs'));
+    }
+
+    public function detail($id)
+    {
+      $files = File::with('folder', 'bidang', 'user')->where('id', $id)->get();
+      return view('admin.file.detail', compact('files'));
     }
 
     public function find(Request $request)
-    {/*blm d edit
+    {
       $id = $request->get('bidang_id');
       if ($id > 0) {
-        $folders = Folder::with('user', 'bidang')->where('bidang_id', $id)->orderBy('name')->get();
+        $files = File::with('folder', 'bidang')->where('bidang_id', $id)->orderBy('name')->get();
         $bidangs = Bidang::all();
-        return view('admin.folder.index', compact('folders', 'bidangs'));
+        return view('admin.file.index', compact('files', 'bidangs'));
       } else {
-        return redirect()->route('folder.index')->with('warning', 'Gagal pencarian, anda belum memilih bidang!');
-      }*/
+        return redirect()->route('file.index')->with('warning', 'Gagal pencarian, anda belum memilih bidang!');
+      }
     }
 
     public function create(){
@@ -44,39 +50,45 @@ class FileController extends Controller
 
     public function store(Request $request)
     {
+      $folder_id     = $request->get('folder_id');
+      $getFolderName = Folder::where('id', $folder_id)->first();
+      $getFolderName = $getFolderName->name;
+
+      $bidang_id     = $request->get('bidang_id');
+      $getBidangName = Bidang::where('id', $bidang_id)->first();
+      $getBidangName = $getBidangName->name;
+
+      $path = "public/".$getBidangName."/".$getFolderName;
       if ($request->hasFile('file')) {
-        $folder_id     = $request->get('folder_id');
-        $getFolderName = Folder::where('id', $folder_id)->first();
-        $getFolderName = $getFolderName->name;
-
-        $bidang_id     = $request->get('bidang_id');
-        $getBidangName = Bidang::where('id', $bidang_id)->first();
-        $getBidangName = $getBidangName->name;
-
-        $path     = "public/".$getBidangName."/".$getFolderName;
         foreach ($request->file as $file) {
           $fileName = $file->getClientOriginalName();
           $fileExt  = $file->getClientOriginalExtension();
           $fileSize = $file->getClientSize();
 
-          //store to file
-          $file->storeAs($path, $fileName);
+          //if file is not null @ db then it cannot be store
+          $fixPath = $path."/".$fileName;
+          $fixPath = File::where('path', $fixPath)->first();
+          if ($fixPath != NULL) {
+            return redirect()->route('file.index')->with('warning', 'Gagal upload file, terdapat file yang sama!');
+          } else {
+            //store to file
+            $file->storeAs($path, $fileName);
 
-          //store to db
-          $fileObject = new File;
-          $fileObject->name = $fileName;
-          $fileObject->ext = $fileExt;
-          $fileObject->size = $fileSize;
-          $fileObject->path = $path."/".$fileName;
-          $fileObject->access_permission = 777;
-          $fileObject->status = "not_edited";
-          $fileObject->user_id = Auth::user()->id;
-          $fileObject->bidang_id = $bidang_id;
-          $fileObject->folder_id = $folder_id;
-          $fileObject->save();
-
-          return redirect()->route('file.index')->with('success', 'File berhasil diupload!');
+            //store to db
+            $fileObject = new File;
+            $fileObject->name = $fileName;
+            $fileObject->ext = $fileExt;
+            $fileObject->size = $fileSize;
+            $fileObject->path = $path."/".$fileName;
+            $fileObject->access_permission = 777;
+            $fileObject->status = "not_edited";
+            $fileObject->user_id = Auth::user()->id;
+            $fileObject->bidang_id = $bidang_id;
+            $fileObject->folder_id = $folder_id;
+            $fileObject->save();
+          }
         }
+        return redirect()->route('file.index')->with('success', 'File berhasil diupload!');
       }
       else {
         return redirect()->route('file.index')->with('warning', 'Gagal upload file!');
@@ -152,52 +164,21 @@ class FileController extends Controller
       return $this->red;
     }
 
-    public function destroy($id){
-      $datas = File::findOrFail($id);
-      $tmpName = $datas->name;
-      $tmpExt = $datas->ext;
-      $tmpStatus = $datas->status;
-      $tmpKodemk = $datas->kode_mk;
+    public function destroy($id)
+    {
+      $files = File::findOrFail($id);
+      $tmpStatus = $files->status;
+      $path = $files->path;
 
-      switch ($tmpKodemk) {
-        case 'C31040315':
-          $dir = "jarkom";
-          break;
-        case 'C31040311':
-          $dir = "sbd";
-          break;
-        case 'C31040203':
-          $dir = "pv";
-          break;
-        case 'C31040206':
-          $dir = "pbo";
-          break;
-        case 'C31040216':
-          $dir = "pc";
-          break;
-        case 'C31040309':
-          $dir = "tekan";
-          break;
-        case 'C31040306':
-          $dir = "simpel";
-          break;
-        case 'C31041403':
-          $dir = "rpw";
-          break;
-        default:
-          $dir = "";
-          break;
-      }
       if ($tmpStatus == "edited") {
-        Storage::delete("public/".$dir."/".$tmpName.".".$tmpExt);
-        echo "File ".$tmpName.".".$tmpExt." deleted";
+        //Storage::delete("public/".$dir."/".$tmpName.".".$tmpExt);
+        echo "gagal";
       }
       else{
-        Storage::delete("public/".$dir."/".$tmpName);
-        echo "File ".$tmpName." deleted";
+        Storage::delete($path);
       }
-      $datas->delete();
-      return $this->red;
+      $files->delete();
+      return redirect()->route('file.index')->with('success', 'File berhasil dihapus!');
     }
 
     public function download($id){
