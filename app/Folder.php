@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Folder extends Model
 {
   protected $fillable = [
-      'name', 'path', 'access_permission', 'user_id', 'bidang_id'
+      'name', 'access_permission', 'user_id', 'bidang_id'
   ];
 
   public function getCreatedAtAttribute()

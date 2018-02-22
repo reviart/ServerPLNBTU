@@ -16,7 +16,6 @@ class CreateFoldersTable extends Migration
         Schema::create('folders', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('path')->nullable();
             $table->integer('access_permission')->nullable();
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('bidang_id');

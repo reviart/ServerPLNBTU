@@ -35,7 +35,7 @@
         </select>
       </div>
       <div class="col-md-1">
-        <button type="submit" onclick="return confirm('Apakah sudah memilih folder atau bidang?')" class="btn btn-primary">
+        <button type="submit" onclick="return confirm('Apakah sudah memilih bidang?')" class="btn btn-primary">
             Cari
         </button>
       </div>
@@ -52,7 +52,7 @@
           <th>Nama bidang</th>
           <th>Terakhir diubah</th>
           @if(Auth::user())
-          <th colspan="3">Aksi</th>
+          <th colspan="4">Aksi</th>
           @endif
         </tr>
       </thead>
@@ -65,9 +65,11 @@
           <td>{{$data->folder->name}}</td>
           <td>{{$data->bidang->name}}</td>
           <td>{{$data->updated_at}}</td>
-          @if(Auth::user())
           <td width="5%"><a href="{{ route('file.detail', [$data->id]) }}" class="btn btn-primary">Detail</a></td>
+          @if(Auth::user())
           <td width="5%"><a href="{{ route('file.edit', [$data->id]) }}" class="btn btn-warning">Edit</a></td>
+          @endif
+          @if(Auth::user()->id == $data->user_id)
           <td width="5%">
             <form class="" action="{{ route('file.destroy', [$data->id]) }}" method="post">
               {{ csrf_field() }}
@@ -76,6 +78,7 @@
             </form>
           </td>
           @endif
+          <td><a href="{{ route('file.download', [$data->id]) }}" class="btn btn-primary">Download</a></td>
         </tr>
         @endforeach
       </tbody>

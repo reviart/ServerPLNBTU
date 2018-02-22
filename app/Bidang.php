@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Bidang extends Model
 {
   protected $fillable = [
-      'name', 'path', 'access_permission','user_id',
+      'name', 'access_permission','user_id',
   ];
 
   public function getCreatedAtAttribute()

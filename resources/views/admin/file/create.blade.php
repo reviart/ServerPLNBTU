@@ -40,7 +40,7 @@
                       </div>
                       <div class="form-group">
                           <div class="col-md-6 col-md-offset-3">
-                              <input type="submit" name="submit" value="upload" class="btn btn-primary">
+                              <input type="submit" name="submit" value="upload" onclick="return confirm('Apakah data sudah terisi benar?')" class="btn btn-primary">
                               <button type="button" name="button" onclick="history.back()" class="btn btn-warning">Cancel</button>
                           </div>
                       </div>

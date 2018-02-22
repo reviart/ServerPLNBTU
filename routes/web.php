@@ -15,12 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/test', function () {
-    $name = "BLAW";
-    $folders = DB::table('folders')->where('name', $name)->first();
-    echo $folders->id;
-});
-
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
@@ -49,9 +43,10 @@ Route::prefix('file')->group(function () {
   Route::get('/', 'FileController@index')->name('file.index');
   Route::get('detail/{id}', 'FileController@detail')->name('file.detail');
   Route::post('find', 'FileController@find')->name('file.find');
-  Route::get('/store', 'FileController@create')->name('file.store');
-  Route::post('/store', 'FileController@store')->name('file.store.submit');
-  Route::get('/edit/{id}', 'FileController@show')->name('file.edit');
-  Route::put('/saveEdit/{id}', 'FileController@update')->name('file.edit.submit');
-  Route::delete('/destroy/{id}', 'FileController@destroy')->name('file.destroy');
+  Route::get('store', 'FileController@create')->name('file.store');
+  Route::post('store', 'FileController@store')->name('file.store.submit');
+  Route::get('edit/{id}', 'FileController@show')->name('file.edit');
+  Route::put('saveEdit/{id}', 'FileController@update')->name('file.edit.submit');
+  Route::delete('destroy/{id}', 'FileController@destroy')->name('file.destroy');
+  Route::get('download/{id}', 'FileController@download')->name('file.download');
 });

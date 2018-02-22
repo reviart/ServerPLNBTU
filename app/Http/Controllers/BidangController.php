@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Bidang;
 use App\Folder;
+use App\File;
 use Auth;
-use DB;
 
 class BidangController extends Controller
 {
@@ -36,15 +36,16 @@ class BidangController extends Controller
 
     public function store(Request $request)
     {
+      //get name then make it upper
       $name = strtoupper($request->get('name'));
-
       //checking the name first
       $bidang = Bidang::where('name', $name)->first();
+
       if ($bidang == NULL) {
         //making or storing ap
         $ap = $request->get('access_permission');
         if ($ap == NULL) {
-          $ap = 777;
+          $ap = 775;
         }
 
         //create directory
@@ -53,7 +54,6 @@ class BidangController extends Controller
         //save to db
         $object = new Bidang;
         $object->name = $name;
-        $object->path = "public/".$name;
         $object->access_permission = $ap;
         $object->user_id = Auth::user()->id;
         $object->save();
@@ -72,17 +72,19 @@ class BidangController extends Controller
 
     public function update(Request $request, $id)
     {
+      //get new name
       $newName = strtoupper($request->get('name'));
       //checking the name first
       $checkName = Bidang::where('name', $newName)->first();
+
       if ($checkName == NULL) {
         $bidangs = Bidang::find($id);
-        $oldPath = $bidangs->path;
+        $oldName = $bidangs->name;
+        $oldPath = "public/".$oldName;
         $path = "public/".$newName;
         //update at db
         $bidangs->update([
           'name' => $newName,
-          'path' => $path,
           'user_id' => Auth::user()->id
         ]);
         //update at directory
@@ -97,10 +99,15 @@ class BidangController extends Controller
     public function destroy($id)
     {
       $bidangs = Bidang::findOrFail($id);
-      $path = Bidang::where('id', $id)->get();
+      $name = $bidangs->name;
+      $path = "public/".$name;
 
-      if (Storage::deleteDirectory($path[0]->path)) {
+      if (Storage::deleteDirectory($path)) {
         //destroy multiple child first
+        $files = File::where('bidang_id', $id)->get(['id']);
+        File::destroy($files->toArray());
+
+        //destroy folder
         $folders = Folder::where('bidang_id', $id)->get(['id']);
         Folder::destroy($folders->toArray());
 

@@ -18,9 +18,7 @@ class CreateFilesTable extends Migration
             $table->string('name');
             $table->string('ext');
             $table->string('size');
-            $table->string('path')->nullable();
             $table->integer('access_permission')->nullable();
-            $table->enum('status', ['edited', 'not_edited']);
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('bidang_id');
             $table->unsignedInteger('folder_id');

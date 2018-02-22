@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Bidang;
 use App\Folder;
+use App\File;
 use Auth;
 
 class FolderController extends Controller
@@ -42,11 +43,13 @@ class FolderController extends Controller
 
     public function store(Request $request)
     {
+      //get new name
       $name = strtoupper($request->get('name'));
 
       //checking all the data is empty
       $folders = Folder::where('name', $name)->first();
       $bidangid_new = $request->get('bidang_id');
+
       if ($folders == NULL) {
         $bidang_id = $bidangid_new;
         $bidang_name = Bidang::where('id', $bidang_id)->get();
@@ -55,7 +58,7 @@ class FolderController extends Controller
         //making or storing ap
         $ap = $request->get('access_permission');
         if ($ap == NULL) {
-          $ap = 777;
+          $ap = 775;
         }
 
         //create directory
@@ -64,7 +67,6 @@ class FolderController extends Controller
         //save to db
         $object = new Folder;
         $object->name = $name;
-        $object->path = "public/".$bidang_name."/".$name;
         $object->access_permission = $ap;
         $object->user_id = Auth::user()->id;
         $object->bidang_id = $bidang_id;
@@ -80,7 +82,7 @@ class FolderController extends Controller
         //making or storing ap
         $ap = $request->get('access_permission');
         if ($ap == NULL) {
-          $ap = 777;
+          $ap = 775;
         }
 
         //create directory
@@ -89,7 +91,6 @@ class FolderController extends Controller
         //save to db
         $object = new Folder;
         $object->name = $name;
-        $object->path = "public/".$bidang_name."/".$name;
         $object->access_permission = $ap;
         $object->user_id = Auth::user()->id;
         $object->bidang_id = $bidang_id;
@@ -104,11 +105,9 @@ class FolderController extends Controller
 
     public function show($id)
     {
-      $folders = Folder::where('id', $id)->first();
-      $bidangs = Folder::with('bidang')->where('id', $id)->first();
+      $folders = Folder::with('bidang')->where('id', $id)->first();
       $lists = Bidang::all();
-      //echo $bidangs->bidang->name;
-      return view('admin.folder.edit', compact('folders', 'bidangs', 'lists'));
+      return view('admin.folder.edit', compact('folders', 'lists'));
     }
 
     public function update(Request $request, $id)
@@ -116,11 +115,14 @@ class FolderController extends Controller
       //checking the name and bidang_id
       $newFolderName = strtoupper($request->get('name'));
       $checkName = Folder::where('name', $newFolderName)->first();
+
       $newBidangIdFolder = $request->get('bidang_id');
       if ($checkName == NULL) {
-        //get $oldPath to change location or rename dir
-        $folders = Folder::find($id);
-        $oldFolderPath = $folders->path;
+        //get $oldPath to change location or rename di
+        $folders = Folder::with('bidang')->where('id', $id)->first();
+        $oldName = $folders->name;
+        $oldBidang = $folders->bidang->name;
+        $oldFolderPath = "public/".$oldBidang."/".$oldName;
 
         //get bidang name
         $tmp = Bidang::where('id', $newBidangIdFolder)->first();
@@ -130,7 +132,6 @@ class FolderController extends Controller
         //update at db
         $folders->update([
           'name' => $newFolderName,
-          'path' => $newPathFolder,
           'user_id' => Auth::user()->id,
           'bidang_id' => $newBidangIdFolder
         ]);
@@ -141,9 +142,11 @@ class FolderController extends Controller
         return redirect()->route('folder.index')->with('success', '1 data telah diubah!');
       }
       elseif (($checkName->name != NULL) && ($checkName->id != $newBidangIdFolder)) {
-        //get $oldPath to change location or rename dir
-        $folders = Folder::find($id);
-        $oldFolderPath = $folders->path;
+        //get $oldPath to change location or rename di
+        $folders = Folder::with('bidang')->where('id', $id)->first();
+        $oldName = $folders->name;
+        $oldBidang = $folders->bidang->name;
+        $oldFolderPath = "public/".$oldBidang."/".$oldName;
 
         //get bidang name
         $tmp = Bidang::where('id', $newBidangIdFolder)->first();
@@ -153,7 +156,6 @@ class FolderController extends Controller
         //update at db
         $folders->update([
           'name' => $newFolderName,
-          'path' => $newPathFolder,
           'user_id' => Auth::user()->id,
           'bidang_id' => $newBidangIdFolder
         ]);
@@ -170,8 +172,11 @@ class FolderController extends Controller
 
     public function destroy($id)
     {
-      $folders = Folder::findOrFail($id);
-      $path = $folders->path;
+      //get $oldPath to destroy it
+      $folders = Folder::with('bidang')->where('id', $id)->first();
+      $oldName = $folders->name;
+      $oldBidang = $folders->bidang->name;
+      $path = "public/".$oldBidang."/".$oldName;
 
       if (Storage::deleteDirectory($path)) {
         //destroy multiple child first
