@@ -59,7 +59,7 @@
       <tbody>
         <?php $no = 0; ?>
         @foreach($files as $data)
-        <tr class="info">
+        <tr class="active">
           <td>{{$no += 1}}</td>
           <td>{{$data->name}}</td>
           <td>{{$data->folder->name}}</td>

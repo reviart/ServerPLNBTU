@@ -19,16 +19,20 @@ class FolderController extends Controller
     public function index()
     {
       $folders = Folder::with('user', 'bidang')->orderBy('name')->get();
-      $bidangs = Bidang::all();
+      $bidangs = Bidang::orderBy('name')->get();
       return view('admin.folder.index', compact('folders', 'bidangs'));
     }
 
     public function find(Request $request)
     {
+      //get selected id
       $id = $request->get('bidang_id');
+
+      //if the id is not 0 or below from 0 then id can be processed to the next step
       if ($id > 0) {
+        //get a file where bidangid equals with selected id
         $folders = Folder::with('user', 'bidang')->where('bidang_id', $id)->orderBy('name')->get();
-        $bidangs = Bidang::all();
+        $bidangs = Bidang::orderBy('name')->get();
         return view('admin.folder.index', compact('folders', 'bidangs'));
       } else {
         return redirect()->route('folder.index')->with('warning', 'Gagal pencarian, anda belum memilih bidang!');
@@ -37,7 +41,7 @@ class FolderController extends Controller
 
     public function create()
     {
-      $bidangs = Bidang::all();
+      $bidangs = Bidang::orderBy('name')->get();
       return view('admin.folder.create', compact('bidangs'));
     }
 
@@ -50,10 +54,11 @@ class FolderController extends Controller
       $folders = Folder::where('name', $name)->first();
       $bidangid_new = $request->get('bidang_id');
 
+      //if folder which we store already exist, you can't store it twice
       if ($folders == NULL) {
         $bidang_id = $bidangid_new;
-        $bidang_name = Bidang::where('id', $bidang_id)->get();
-        $bidang_name = $bidang_name[0]->name;
+        $bidang_name = Bidang::where('id', $bidang_id)->first();
+        $bidang_name = $bidang_name->name;
 
         //making or storing ap
         $ap = $request->get('access_permission');
@@ -74,10 +79,11 @@ class FolderController extends Controller
 
         return redirect()->route('folder.index')->with('success', '1 data berhasil ditambah!');
       }
+      //if folder is not null and folderbidangid is not same bidangidnew then you can proccess it
       elseif (($folders->name != NULL) && ($folders->bidang_id != $bidangid_new)) {
         $bidang_id = $bidangid_new;
-        $bidang_name = Bidang::where('id', $bidang_id)->get();
-        $bidang_name = $bidang_name[0]->name;
+        $bidang_name = Bidang::where('id', $bidang_id)->first();
+        $bidang_name = $bidang_name->name;
 
         //making or storing ap
         $ap = $request->get('access_permission');
@@ -106,7 +112,7 @@ class FolderController extends Controller
     public function show($id)
     {
       $folders = Folder::with('bidang')->where('id', $id)->first();
-      $lists = Bidang::all();
+      $lists = Bidang::orderBy('name')->get();
       return view('admin.folder.edit', compact('folders', 'lists'));
     }
 
@@ -172,12 +178,14 @@ class FolderController extends Controller
 
     public function destroy($id)
     {
-      //get $oldPath to destroy it
+      //select 1 record
       $folders = Folder::with('bidang')->where('id', $id)->first();
+      //get $oldPath to destroy it
       $oldName = $folders->name;
       $oldBidang = $folders->bidang->name;
       $path = "public/".$oldBidang."/".$oldName;
 
+      //if the directory (folder) can be deleted then destroy files and folders data
       if (Storage::deleteDirectory($path)) {
         //destroy multiple child first
         $files = File::where('folder_id', $id)->get(['id']);

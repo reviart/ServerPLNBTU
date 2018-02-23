@@ -27,8 +27,6 @@
         <tr class="success">
           <th>NO</th>
           <th>Nama bidang</th>
-          <th>Banyak folder</th>
-          <th>Banyak file</th>
           <th>Dibuat/diubah oleh</th>
           <th>Waktu pembuatan</th>
           <th>Terakhir diubah</th>
@@ -38,11 +36,9 @@
       <tbody>
         <?php $no = 0; ?>
         @foreach($bidangs as $data)
-        <tr class="info">
+        <tr class="active">
           <td>{{$no += 1}}</td>
           <td>{{$data->name}}</td>
-          <td>Banyak folder</td>
-          <td>Banyak file</td>
           <td>{{ substr($data->user->name, 0, 15) }}</td>
           <td>{{$data->created_at}}</td>
           <td>{{$data->updated_at}}</td>

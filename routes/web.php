@@ -16,8 +16,13 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::prefix('public')->group(function () {
+  Route::get('file', 'PublicController@index')->name('public.file');
+  Route::post('find', 'PublicController@find')->name('public.file.find');
+  Route::get('download/{id}', 'PublicController@download')->name('public.file.download');
+});
 
 Route::prefix('bidang')->group(function () {
   Route::get('/', 'BidangController@index')->name('bidang.index');

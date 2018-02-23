@@ -20,13 +20,6 @@ class BidangController extends Controller
     {
       $bidangs = Bidang::with('user')->orderBy('name')->get();
       return view('admin.bidang.index', compact('bidangs'));
-      /*$id = $bidangs[0]->id;
-      $c_folders = Folder::where('bidang_id', $id);
-      hitung banyak folder yang memilih bidang tersebut
-      countfolder $bidangs->id = */
-      //$id = $bidangs[0]->id;
-      //$c_folders = Folder::with('bidang')->count('bidang_id')->where('bidang_id', $id);
-      //return "ok";
     }
 
     public function create()
@@ -41,8 +34,9 @@ class BidangController extends Controller
       //checking the name first
       $bidang = Bidang::where('name', $name)->first();
 
+      //if the new name is null in the db then you can save the data
       if ($bidang == NULL) {
-        //making or storing ap
+        //making or storing access_permission with 755
         $ap = $request->get('access_permission');
         if ($ap == NULL) {
           $ap = 775;
@@ -51,7 +45,7 @@ class BidangController extends Controller
         //create directory
         Storage::makeDirectory('public/'.$name, $ap);
 
-        //save to db
+        //bidang's data save to db
         $object = new Bidang;
         $object->name = $name;
         $object->access_permission = $ap;
@@ -77,16 +71,20 @@ class BidangController extends Controller
       //checking the name first
       $checkName = Bidang::where('name', $newName)->first();
 
+      //if the new name is null in the db then you can update the data
       if ($checkName == NULL) {
+        //finding the path
         $bidangs = Bidang::find($id);
         $oldName = $bidangs->name;
         $oldPath = "public/".$oldName;
         $path = "public/".$newName;
-        //update at db
+
+        //update to the db
         $bidangs->update([
           'name' => $newName,
           'user_id' => Auth::user()->id
         ]);
+
         //update at directory
         Storage::move($oldPath, $path);
 
@@ -98,20 +96,22 @@ class BidangController extends Controller
 
     public function destroy($id)
     {
+      //finding the path
       $bidangs = Bidang::findOrFail($id);
       $name = $bidangs->name;
       $path = "public/".$name;
 
+      //if the directory (bidang) can be deleted then destroy files and folders data
       if (Storage::deleteDirectory($path)) {
-        //destroy multiple child first
+        //destroy multiple child first (file)
         $files = File::where('bidang_id', $id)->get(['id']);
         File::destroy($files->toArray());
 
-        //destroy folder
+        //destroy folder (folder)
         $folders = Folder::where('bidang_id', $id)->get(['id']);
         Folder::destroy($folders->toArray());
 
-        //then destroy the parent
+        //then destroy the parent (bidang)
         $bidangs->delete();
         return redirect()->back()->with('success', 'Seluruh file dan directori berhasil dihapus!');
       }else {

@@ -25,7 +25,7 @@
                       <div class="form-group{{ $errors->has('access_permission') ? ' has-error' : '' }}">
                           <label for="access_permission" class="col-md-3 control-label">Hak akses</label>
                           <div class="col-md-8">
-                              <input id="access_permission" type="number" class="form-control" name="access_permission" placeholder="Ex: 777 (tidak wajib)">
+                              <input id="access_permission" type="number" class="form-control" name="access_permission" placeholder="Ex: 775 (tidak wajib)">
                               @if ($errors->has('access_permission'))
                                   <span class="help-block">
                                       <strong>{{ $errors->first('access_permission') }}</strong>

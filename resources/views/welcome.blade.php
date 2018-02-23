@@ -83,7 +83,7 @@
                 </div>
 
                 <div class="links">
-                    <a href="#">Pencarian data</a>
+                    <a href="{{ route('public.file') }}">Pencarian data</a>
                 </div>
             </div>
         </div>
