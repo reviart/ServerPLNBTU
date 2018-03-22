@@ -46,6 +46,9 @@
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
             <li><a href="{{ route('public.file') }}">Pencarian data</a></li>
+            @if(!Auth::user())
+            <li><a href="{{ route('login') }}">Login</a></li>
+            @endif
           </ul>
           @if(Auth::user())
           <ul class="nav nav-sidebar">

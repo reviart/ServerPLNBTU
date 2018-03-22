@@ -13,7 +13,7 @@ class PublicController extends Controller
 {
   public function index()
   {
-    $files = File::with('folder', 'bidang')->orderBy('name')->get();
+    $files = File::with('folder', 'bidang')->orderBy('folder_id', 'DESC')->get();
     $bidangs = Bidang::orderBy('name')->get();
     return view('pub_index', compact('files', 'bidangs'));
   }
@@ -22,7 +22,7 @@ class PublicController extends Controller
   {
     $id = $request->get('bidang_id');
     if ($id > 0) {
-      $files = File::with('folder', 'bidang')->where('bidang_id', $id)->orderBy('name')->get();
+      $files = File::with('folder', 'bidang')->where('bidang_id', $id)->orderBy('folder_id', 'DESC')->get();
       $bidangs = Bidang::all();
       return view('pub_index', compact('files', 'bidangs'));
     } else {

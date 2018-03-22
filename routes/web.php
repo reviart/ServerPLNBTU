@@ -11,12 +11,13 @@
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('welcome');
-});
+});*/
+Route::get('/', 'PublicController@index')->name('public.file');
 
 Auth::routes();
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->name('home');//profile page
 
 Route::prefix('public')->group(function () {
   Route::get('file', 'PublicController@index')->name('public.file');
